@@ -2,7 +2,13 @@
 
 ## Pending changes
 
+---
+
+## 1.6.0-alpha01
+
 - [#701](https://github.com/bumble-tech/appyx/pull/701) – **Added**: Shared element transition and movable content support
+
+<div style="text-align: center"><small>08 May 2024</small></div>
 
 ---
 
