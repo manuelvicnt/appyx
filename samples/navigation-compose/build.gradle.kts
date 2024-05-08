@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.bumble.appyx.sample.navigtion.compose"
+    namespace = "com.bumble.appyx.sample.navigation.compose"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
 
     defaultConfig {

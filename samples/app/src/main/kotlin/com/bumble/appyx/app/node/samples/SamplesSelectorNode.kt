@@ -26,7 +26,7 @@ import com.bumble.appyx.core.navigation.model.permanent.PermanentNavModel
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.ParentNode
 import com.bumble.appyx.core.node.node
-import com.bumble.appyx.sample.navigtion.compose.ComposeNavigationRoot
+import com.bumble.appyx.sample.navigation.compose.ComposeNavigationRoot
 import kotlinx.parcelize.Parcelize
 
 class SamplesSelectorNode(

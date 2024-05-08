@@ -1,7 +1,12 @@
 package com.bumble.appyx.core.composable
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -23,15 +28,21 @@ import com.bumble.appyx.core.navigation.transition.TransitionBounds
 import com.bumble.appyx.core.navigation.transition.TransitionDescriptor
 import com.bumble.appyx.core.navigation.transition.TransitionHandler
 import com.bumble.appyx.core.navigation.transition.TransitionParams
+import com.bumble.appyx.core.node.LocalMovableContentMap
+import com.bumble.appyx.core.node.LocalNodeTargetVisibility
+import com.bumble.appyx.core.node.LocalSharedElementScope
 import com.bumble.appyx.core.node.ParentNode
 import kotlinx.coroutines.flow.map
 import kotlin.reflect.KClass
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 inline fun <reified NavTarget : Any, State> ParentNode<NavTarget>.Children(
     navModel: NavModel<NavTarget, State>,
     modifier: Modifier = Modifier,
-    transitionHandler: TransitionHandler<NavTarget, State> = JumpToEndTransitionHandler(),
+    transitionHandler: TransitionHandler<NavTarget, State> = remember { JumpToEndTransitionHandler() },
+    withSharedElementTransition: Boolean = false,
+    withMovableContent: Boolean = false,
     noinline block: @Composable ChildrenTransitionScope<NavTarget, State>.() -> Unit = {
         children<NavTarget> { child ->
             child()
@@ -50,21 +61,51 @@ inline fun <reified NavTarget : Any, State> ParentNode<NavTarget>.Children(
             )
         }
     }
-    Box(modifier = modifier
-        .onSizeChanged {
-            transitionBounds = it
+    if (withSharedElementTransition) {
+        SharedTransitionLayout(modifier = modifier
+            .onSizeChanged {
+                transitionBounds = it
+            }
+        ) {
+            CompositionLocalProvider(
+                /** LocalSharedElementScope will be consumed by children UI to apply shareElement modifier */
+                LocalSharedElementScope provides this,
+                LocalMovableContentMap provides if (withMovableContent) mutableMapOf() else null
+            ) {
+                block(
+                    ChildrenTransitionScope(
+                        transitionHandler = transitionHandler,
+                        transitionParams = transitionParams,
+                        navModel = navModel
+                    )
+                )
+            }
         }
-    ) {
-        block(
-            ChildrenTransitionScope(
-                transitionHandler = transitionHandler,
-                transitionParams = transitionParams,
-                navModel = navModel
-            )
-        )
+    } else {
+        Box(modifier = modifier
+            .onSizeChanged {
+                transitionBounds = it
+            }
+        ) {
+            CompositionLocalProvider(
+                /** If sharedElement is not supported for this Node - provide null otherwise children
+                 * can consume ascendant's LocalSharedElementScope */
+                LocalSharedElementScope provides null,
+                LocalMovableContentMap provides if (withMovableContent) mutableMapOf() else null
+            ) {
+                block(
+                    ChildrenTransitionScope(
+                        transitionHandler = transitionHandler,
+                        transitionParams = transitionParams,
+                        navModel = navModel
+                    )
+                )
+            }
+        }
     }
 }
 
+@Immutable
 class ChildrenTransitionScope<T : Any, S>(
     private val transitionHandler: TransitionHandler<T, S>,
     private val transitionParams: TransitionParams,
@@ -89,6 +130,7 @@ class ChildrenTransitionScope<T : Any, S>(
     }
 
     @Composable
+    @SuppressLint("ComposableNaming")
     fun ParentNode<T>.children(
         clazz: KClass<out T>,
         block: @Composable ChildTransitionScope<S>.(child: ChildRenderer) -> Unit,
@@ -101,6 +143,7 @@ class ChildrenTransitionScope<T : Any, S>(
     }
 
     @Composable
+    @SuppressLint("ComposableNaming")
     fun ParentNode<T>.children(
         clazz: KClass<out T>,
         block: @Composable ChildTransitionScope<S>.(
@@ -116,6 +159,7 @@ class ChildrenTransitionScope<T : Any, S>(
         }
     }
 
+    @SuppressLint("ComposableNaming")
     @Composable
     private fun ParentNode<T>._children(
         clazz: KClass<out T>,
@@ -140,30 +184,32 @@ class ChildrenTransitionScope<T : Any, S>(
                 }
         }
 
-        val visibleElementsFlow = remember {
+        val screenStateFlow = remember {
             this@ChildrenTransitionScope
                 .navModel
                 .screenState
-                .map { list ->
-                    list
-                        .onScreen
-                        .filter { clazz.isInstance(it.key.navTarget) }
+        }
+
+        val children by screenStateFlow.collectAsState()
+
+        children
+            .onScreen
+            .filter { clazz.isInstance(it.key.navTarget) }
+            .forEach { navElement ->
+                key(navElement.key.id) {
+                    CompositionLocalProvider(
+                        LocalNodeTargetVisibility provides
+                                children.onScreenWithVisibleTargetState.contains(navElement)
+                    ) {
+                        Child(
+                            navElement,
+                            saveableStateHolder,
+                            transitionParams,
+                            transitionHandler,
+                            block
+                        )
+                    }
                 }
-        }
-        val children by visibleElementsFlow.collectAsState(emptyList())
-
-
-        children.forEach { navElement ->
-            key(navElement.key.id) {
-                Child(
-                    navElement,
-                    saveableStateHolder,
-                    transitionParams,
-                    transitionHandler,
-                    block
-                )
             }
-
-        }
     }
 }

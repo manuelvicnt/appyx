@@ -1,4 +1,4 @@
-package com.bumble.appyx.sample.navigtion.compose
+package com.bumble.appyx.sample.navigation.compose
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column

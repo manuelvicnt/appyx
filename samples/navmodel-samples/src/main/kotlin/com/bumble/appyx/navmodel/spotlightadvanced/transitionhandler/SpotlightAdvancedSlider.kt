@@ -39,7 +39,7 @@ class SpotlightAdvancedSlider<T>(
     }
 ) : ModifierTransitionHandler<T, SpotlightAdvanced.State>() {
 
-    @Suppress("ModifierFactoryExtensionFunction", "MagicNumber")
+    @Suppress("ModifierFactoryExtensionFunction", "MagicNumber", "SuspiciousModifierThen")
     override fun createModifier(
         modifier: Modifier,
         transition: Transition<SpotlightAdvanced.State>,

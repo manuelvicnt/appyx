@@ -1,4 +1,4 @@
-package com.bumble.appyx.sample.navigtion.compose
+package com.bumble.appyx.sample.navigation.compose
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.CompositionLocalProvider

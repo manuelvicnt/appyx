@@ -69,6 +69,7 @@ abstract class BaseNavModel<NavTarget, State>(
         state
             .mapState(scope) { elements ->
                 NavModelAdapter.ScreenState(
+                    onScreenWithVisibleTargetState = elements.filter { screenResolver.isOnScreen(it.targetState) },
                     onScreen = elements.filter { screenResolver.isOnScreen(it) },
                     offScreen = elements.filterNot { screenResolver.isOnScreen(it) },
                 )
