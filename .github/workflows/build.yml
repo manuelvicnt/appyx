@@ -119,8 +119,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            adb uninstall "com.bumble.appyx.core.test"
-            adb uninstall "com.bumble.appyx.interop.ribs.test"
+            adb shell pm list packages -3 | cut -f 2 -d ":" | while read package; do if [ "$package" = "com.bumble.appyx.sample.navigation.compose.test" ] || [ "$package" = "com.bumble.appyx.core.test" ] || [ "$package" = "com.bumble.appyx.interop.ribs.test" ]; then adb uninstall $package; fi; done
             adb logcat > logcat.out &
             ./gradlew connectedCheck
       - name: Upload failed instrumentation artifacts
