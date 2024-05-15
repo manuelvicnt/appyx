@@ -45,7 +45,7 @@ dependencies {
     val composeBom = platform(libs.compose.bom)
 
     api(composeBom)
-    api("androidx.compose.animation:animation:1.7.0-alpha08")
+    api("androidx.compose.animation:animation:1.7.0-beta01")
     api(project(":libraries:customisations"))
     api(libs.androidx.lifecycle.common)
     api(libs.compose.runtime)
