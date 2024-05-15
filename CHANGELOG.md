@@ -2,6 +2,8 @@
 
 ## Pending changes
 
+- [#706](https://github.com/bumble-tech/appyx/pull/706) – **Updated**: Jetpack compose animation to beta01
+
 ---
 
 ## 1.6.0-alpha01
