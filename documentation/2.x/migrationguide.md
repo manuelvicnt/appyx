@@ -21,7 +21,7 @@ The library is packaged as multiple artifacts.
 - Android library
 - Compose Multiplatform. 
 
-Check also [Multiplatform](../navigation/multiplatform.md) documentation and the `:demos:appyx-navigation` module for code examples.
+Check also [Multiplatform](navigation/multiplatform.md) documentation and the `:demos:appyx-navigation` module for code examples.
 
 #### :appyx-interactions
 
@@ -52,7 +52,7 @@ Check also [Multiplatform](../navigation/multiplatform.md) documentation and the
 
 #### Core
 
-Note that [BackStack](../components/backstack.md) and [Spotlight](../components/spotlight.md) are now standalone artifacts. Check your usage, you might only need `backstack`:
+Note that [BackStack](components/backstack.md) and [Spotlight](components/spotlight.md) are now standalone artifacts. Check your usage, you might only need `backstack`:
 
 ```diff
 -implementation("com.bumble.appyx:core:1.x.x")

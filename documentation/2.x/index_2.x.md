@@ -119,12 +119,12 @@ Stacks, custom pagers, custom UI components – whether for navigation, or stand
 
 ## 2.x migration guide
 
-If you used Appyx `1.x` before, you can find a [summary of differences](2.x/migrationguide.md) here.
+If you used Appyx `1.x` before, you can find a [summary of differences](migrationguide.md) here.
 
 
 ## 1.x documentation
 
 This page is about Appyx `2.x` (alpha).
 
-You can find `1.x` related documentation [here](1.x/index.md).
+You can find `1.x` related documentation [here](../1.x/index.md).
 
