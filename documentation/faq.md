@@ -1,5 +1,3 @@
-{% include-markdown "./deprecation.md" %}
-
 # FAQ
 
 
