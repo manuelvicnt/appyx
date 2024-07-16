@@ -1,6 +1,10 @@
 ---
-title: Appyx – Overview
+title: Appyx 2.x (experimental) – Overview
 ---
+
+# Disclaimer
+
+We’re stopping the development of Appyx 2.x until further notice. We’re fully committed to maintaining and developing new features for the stable 1.x version of Appyx. We recommend you use that version instead
 
 # Appyx
 
@@ -10,6 +14,8 @@ title: Appyx – Overview
 ![badge-js](https://img.shields.io/badge/platform-js-yellow)
 ![badge-wasm](https://img.shields.io/badge/platform-wasm-teal)
 ![badge-ios](https://img.shields.io/badge/platform-ios-lightgray)
+
+
 
 Model-driven navigation + UI components with gesture control for Compose Multiplatform.
 

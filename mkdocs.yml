@@ -16,17 +16,51 @@ copyright: Copyright &copy; 2022 - 2023 Bumble
 docs_dir: documentation
 
 nav:
-  - Home: index.md
-  - Appyx Navigation:
-      - Overview: navigation/index.md
-      - Sample app: navigation/sample-app.md
-      - Quick start guide: navigation/quick-start.md
-      - Concepts:
+  - Home: 1.x/index.md
+  - Using Appyx:
+    - Quick start guide: 1.x/how-to-use-appyx/quick-start.md
+    - Codelabs: 1.x/how-to-use-appyx/codelabs.md
+    - Coding challenges: 1.x/how-to-use-appyx/coding-challenges.md
+    - Sample apps: 1.x/how-to-use-appyx/sample-apps.md
+  - Navigation:
+    - Model-driven navigation: 1.x/navigation/model-driven-navigation.md
+    - NavModel:
+      - Overview: 1.x/navmodel/index.md
+      - Back stack: 1.x/navmodel/backstack.md
+      - Spotlight: 1.x/navmodel/spotlight.md
+      - Cards: 1.x/navmodel/cards.md
+      - Tiles: 1.x/navmodel/tiles.md
+      - Promoter: 1.x/navmodel/promoter.md
+      - Writing your own: 1.x/navmodel/custom.md
+    - Composable navigation: 1.x/navigation/composable-navigation.md
+    - Implicit navigation: 1.x/navigation/implicit-navigation.md
+    - Explicit navigation: 1.x/navigation/explicit-navigation.md
+    - Deep linking: 1.x/navigation/deep-linking.md
+  - UI:
+    - Children: 1.x/ui/children-view.md
+    - Transitions: 1.x/ui/transitions.md
+  - App:
+    - Structuring your app navigation: 1.x/apps/structure.md
+    - Lifecycle: 1.x/apps/lifecycle.md
+    - Plugins: 1.x/apps/plugins.md
+    - ChildAware API: 1.x/apps/childaware.md
+    - Configuration changes: 1.x/apps/configuration.md
+    - Releases:
+      - Downloads: 1.x/releases/downloads.md
+      - Changelog: 1.x/releases/changelog.md
+  - FAQ: 1.x/faq.md
+  - Appyx 2.x (experimental):
+    - Home: index.md
+    - Appyx Navigation:
+        - Overview: navigation/index_2.x.md
+        - Sample app: navigation/sample-app.md
+        - Quick start guide: navigation/quick-start.md
+        - Concepts:
           - Model-driven navigation: navigation/concepts/model-driven-navigation.md
           - Composable navigation: navigation/concepts/composable-navigation.md
           - Implicit navigation: navigation/concepts/implicit-navigation.md
           - Explicit navigation: navigation/concepts/explicit-navigation.md
-      - Features:
+        - Features:
           - Deep linking: navigation/features/deep-linking.md
           - Scoped DI: navigation/features/scoped-di.md
           - Lifecycle: navigation/features/lifecycle.md
@@ -34,69 +68,33 @@ nav:
           - Plugins: navigation/features/plugins.md
           - ChildAware API: navigation/features/childaware.md
           - Surviving configuration changes: navigation/features/surviving-configuration-changes.md
-      - Integrations:
+        - Integrations:
           - Compose Navigation: navigation/integrations/compose-navigation.md
           - DI frameworks: navigation/integrations/di-frameworks.md
           - RIBs: navigation/integrations/ribs.md
           - RxJava: navigation/integrations/rx.md
           - ViewModel: navigation/integrations/viewmodel.md
-      - Multiplatform: navigation/multiplatform.md
-  - Appyx Interactions:
-    - Overview: interactions/index.md
-    - Using components: interactions/usage.md
-    - Creating your own:
-      - Component overview: interactions/appyxcomponent.md
-      - Transition model: interactions/transitionmodel.md
-      - Operations: interactions/operations.md
-      - UI representation: interactions/ui-representation.md
-      - KSP setup: interactions/ksp.md
-      - Gestures: interactions/gestures.md
-  - Appyx Components:
-    - Overview: components/index.md
-    - Back stack: components/backstack.md
-    - Spotlight: components/spotlight.md
-    - Experimental: components/experimental.md
-
-  - Releases:
-    - Downloads: releases/downloads.md
-    - Changelog: releases/changelog.md
-  - 2.x:
-    - Migration guide: 2.x/migrationguide.md
-  - 1.x:
-    - Overview: 1.x/index.md
+        - Multiplatform: navigation/multiplatform.md
+    - Appyx Interactions:
+      - Overview: interactions/index.md
+      - Using components: interactions/usage.md
+      - Creating your own:
+        - Component overview: interactions/appyxcomponent.md
+        - Transition model: interactions/transitionmodel.md
+        - Operations: interactions/operations.md
+        - UI representation: interactions/ui-representation.md
+        - KSP setup: interactions/ksp.md
+        - Gestures: interactions/gestures.md
+    - Appyx Components:
+      - Overview: components/index.md
+      - Back stack: components/backstack.md
+      - Spotlight: components/spotlight.md
+      - Experimental: components/experimental.md
     - Releases:
-      - Downloads: 1.x/releases/downloads.md
-      - Changelog: 1.x/releases/changelog.md
-    - Using Appyx:
-        - Quick start guide: 1.x/how-to-use-appyx/quick-start.md
-        - Codelabs: 1.x/how-to-use-appyx/codelabs.md
-        - Coding challenges: 1.x/how-to-use-appyx/coding-challenges.md
-        - Sample apps: 1.x/how-to-use-appyx/sample-apps.md
-    - Navigation:
-        - Model-driven navigation: 1.x/navigation/model-driven-navigation.md
-        - NavModel:
-            - Overview: 1.x/navmodel/index.md
-            - Back stack: 1.x/navmodel/backstack.md
-            - Spotlight: 1.x/navmodel/spotlight.md
-            - Cards: 1.x/navmodel/cards.md
-            - Tiles: 1.x/navmodel/tiles.md
-            - Promoter: 1.x/navmodel/promoter.md
-            - Writing your own: 1.x/navmodel/custom.md
-        - Composable navigation: 1.x/navigation/composable-navigation.md
-        - Implicit navigation: 1.x/navigation/implicit-navigation.md
-        - Explicit navigation: 1.x/navigation/explicit-navigation.md
-        - Deep linking: 1.x/navigation/deep-linking.md
-    - UI:
-        - Children: 1.x/ui/children-view.md
-        - Transitions: 1.x/ui/transitions.md
-    - App:
-        - Structuring your app navigation: 1.x/apps/structure.md
-        - Lifecycle: 1.x/apps/lifecycle.md
-        - Plugins: 1.x/apps/plugins.md
-        - ChildAware API: 1.x/apps/childaware.md
-        - Configuration changes: 1.x/apps/configuration.md
-    - FAQ: 1.x/faq.md
-  - FAQ: faq.md
+      - Downloads: releases/downloads.md
+      - Changelog: releases/changelog.md
+    - FAQ: faq.md
+    - Migration guide: 2.x/migrationguide.md
 
 
 # theme configuration
