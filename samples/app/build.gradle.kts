@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
     id("appyx-lint")
     id("appyx-detekt")
 }
@@ -79,6 +80,10 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.ui)
     implementation(libs.google.material)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("com.google.dagger:dagger:2.51.1")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")
 
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.test.espresso.core)

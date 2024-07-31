@@ -1,6 +1,12 @@
+@file:OptIn(
+    ExperimentalUnitApi::class, ExperimentalAnimationApi::class,
+    ExperimentalComposeUiApi::class
+)
+
 package com.bumble.appyx.app.node.slideshow
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -19,23 +25,28 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.coroutineScope
+import com.bumble.appyx.app.common.AppNetworkImpl
+import com.bumble.appyx.app.common.UserCache
 import com.bumble.appyx.app.composable.SpotlightDotsIndicator
 import com.bumble.appyx.app.node.slideshow.WhatsAppyxSlideShow.NavTarget
 import com.bumble.appyx.app.node.slideshow.slide.modeldriven.ComposableNavigation
 import com.bumble.appyx.app.node.slideshow.slide.modeldriven.Intro
+import com.bumble.appyx.app.node.slideshow.slide.modeldriven.IntroStateHolder
 import com.bumble.appyx.app.node.slideshow.slide.modeldriven.ModelDrivenIntro
 import com.bumble.appyx.app.node.slideshow.slide.modeldriven.NavModelTeaserNode
 import com.bumble.appyx.app.ui.AppyxSampleAppTheme
@@ -45,7 +56,6 @@ import com.bumble.appyx.core.integration.NodeHost
 import com.bumble.appyx.core.integrationpoint.IntegrationPointStub
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.modality.BuildContext.Companion.root
-import com.bumble.appyx.core.navigation.backpresshandlerstrategies.DontHandleBackPress
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.ParentNode
 import com.bumble.appyx.navmodel.spotlight.Spotlight
@@ -55,29 +65,26 @@ import com.bumble.appyx.navmodel.spotlight.hasPrevious
 import com.bumble.appyx.navmodel.spotlight.operation.next
 import com.bumble.appyx.navmodel.spotlight.operation.previous
 import com.bumble.appyx.navmodel.spotlight.transitionhandler.rememberSpotlightSlider
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.parcelize.Parcelize
 
-@ExperimentalUnitApi
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
-class WhatsAppyxSlideShow(
-    buildContext: BuildContext,
-    autoAdvanceDelayMs: Long? = null,
-    isInPreviewMode: Boolean = false,
-    private val spotlight: Spotlight<NavTarget> = Spotlight(
+class WhatsAppyxSlideShow @AssistedInject constructor(
+    private val userCache: UserCache,
+    private val introNodeFactory: Intro.IntroNodeFactory,
+    private val modelIntroNodeFactory: ModelDrivenIntro.NodeFactory,
+    // ... All the children node factories go here
+    @Assisted buildContext: BuildContext,
+    @Assisted private val spotlight: Spotlight<NavTarget> = Spotlight(
         items = listOf(
             NavTarget.Intro,
             NavTarget.ModelDrivenIntro,
             NavTarget.NavModelTeaser,
             NavTarget.ComposableNavigation,
         ),
-        backPressHandler = if (isInPreviewMode) {
-            DontHandleBackPress()
-        } else {
-            GoToPrevious()
-        },
+        backPressHandler = GoToPrevious(),
         savedStateMap = buildContext.savedStateMap,
     ),
 ) : ParentNode<NavTarget>(
@@ -85,51 +92,46 @@ class WhatsAppyxSlideShow(
     buildContext = buildContext
 ) {
 
-    init {
-        autoAdvanceDelayMs?.let { ms ->
-            lifecycle.coroutineScope.launchWhenStarted {
-                while (isActive) {
-                    spotlight.next()
-                    delay(ms)
-                    spotlight.next()
-                    delay(ms)
-                    spotlight.next()
-                    delay(ms)
-                    spotlight.previous()
-                    delay(ms)
-                    spotlight.previous()
-                    delay(ms)
-                    spotlight.previous()
-                    delay(ms)
-                }
-            }
-        }
+    @AssistedFactory
+    interface WhatsAppyxSlideShowNodeFactory {
+        fun create(
+            buildContext: BuildContext,
+            spotlight: Spotlight<NavTarget>
+        ): WhatsAppyxSlideShow
     }
 
     sealed class NavTarget : Parcelable {
         @Parcelize
-        object Intro : NavTarget()
+        data object Intro : NavTarget()
 
         @Parcelize
-        object ModelDrivenIntro : NavTarget()
+        data object ModelDrivenIntro : NavTarget()
 
         @Parcelize
-        object NavModelTeaser : NavTarget()
+        data object NavModelTeaser : NavTarget()
 
         @Parcelize
-        object ComposableNavigation : NavTarget()
+        data object ComposableNavigation : NavTarget()
     }
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node =
         when (navTarget) {
-            NavTarget.Intro -> Intro(buildContext)
-            NavTarget.ModelDrivenIntro -> ModelDrivenIntro(buildContext)
+            NavTarget.Intro -> introNodeFactory.create(buildContext)
+            NavTarget.ModelDrivenIntro -> modelIntroNodeFactory.create(buildContext)
             NavTarget.NavModelTeaser -> NavModelTeaserNode(buildContext)
             NavTarget.ComposableNavigation -> ComposableNavigation(buildContext)
         }
 
     @Composable
     override fun View(modifier: Modifier) {
+        LaunchedEffect(Unit) {
+            Log.d("MANUEL_TAG", "WhatsAppyxSlideShow Intro UserCache=${userCache}")
+            Log.d(
+                "MANUEL_TAG",
+                "WhatsAppyxSlideShow Intro UserCache's AppNetwork=${userCache.appNetwork}"
+            )
+        }
+
         val hasPrevious = spotlight.hasPrevious().collectAsState(initial = false)
         val hasNext = spotlight.hasNext().collectAsState(initial = false)
         val previousVisibility = animateFloatAsState(
@@ -140,6 +142,8 @@ class WhatsAppyxSlideShow(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface),
         ) {
+            val userId by userCache.userId.collectAsState()
+            Text(text = "UserCache value = $userId")
             Children(
                 modifier = Modifier
                     .weight(1f)
@@ -241,10 +245,26 @@ fun OnboardingContainerNodePreviewDark() {
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 private fun PreviewContent() {
+    val context = LocalContext.current
     Surface(color = MaterialTheme.colorScheme.background) {
         Box(Modifier.fillMaxSize()) {
             NodeHost(integrationPoint = IntegrationPointStub()) {
-                WhatsAppyxSlideShow(root(null))
+                val userCache = UserCache(
+                    AppNetworkImpl(context, Dispatchers.Unconfined),
+                    Dispatchers.Unconfined
+                )
+                WhatsAppyxSlideShow(
+                    buildContext = root(null),
+                    userCache = userCache,
+                    introNodeFactory = object : Intro.IntroNodeFactory {
+                        override fun create(buildContext: BuildContext): Intro =
+                            Intro(IntroStateHolder(userCache), buildContext)
+                    },
+                    modelIntroNodeFactory = object : ModelDrivenIntro.NodeFactory {
+                        override fun create(buildContext: BuildContext): ModelDrivenIntro =
+                            ModelDrivenIntro(userCache, buildContext)
+                    }
+                )
             }
         }
     }
