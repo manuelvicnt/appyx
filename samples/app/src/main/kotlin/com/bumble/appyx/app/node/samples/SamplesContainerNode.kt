@@ -127,19 +127,8 @@ class SamplesContainerNode @AssistedInject constructor(
                 // We create a user on the onboarding flow that has multiple nodes in it
                 userComponent = userComponentFactory.create()
 
-                userComponent!!.whatsAppyxSlideShowNodeFactory().create(
-                    buildContext = buildContext,
-                    spotlight = Spotlight(
-                        items = listOf(
-                            WhatsAppyxSlideShow.NavTarget.Intro,
-                            WhatsAppyxSlideShow.NavTarget.ModelDrivenIntro,
-                            WhatsAppyxSlideShow.NavTarget.NavModelTeaser,
-                            WhatsAppyxSlideShow.NavTarget.ComposableNavigation,
-                        ),
-                        backPressHandler = GoToPrevious(),
-                        savedStateMap = buildContext.savedStateMap,
-                    )
-                )
+                if (userComponent == null) { /* Fail gracefully */ }
+                userComponent!!.whatsAppyxSlideShowNodeFactory().create(buildContext)
             }
             is NavTarget.CardsExample -> cardsExampleNodeFactory.create(buildContext)
             is NavTarget.ComposeNavigationScreen -> {

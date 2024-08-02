@@ -77,16 +77,7 @@ class WhatsAppyxSlideShow @AssistedInject constructor(
     private val modelIntroNodeFactory: ModelDrivenIntro.NodeFactory,
     // ... All the children node factories go here
     @Assisted buildContext: BuildContext,
-    @Assisted private val spotlight: Spotlight<NavTarget> = Spotlight(
-        items = listOf(
-            NavTarget.Intro,
-            NavTarget.ModelDrivenIntro,
-            NavTarget.NavModelTeaser,
-            NavTarget.ComposableNavigation,
-        ),
-        backPressHandler = GoToPrevious(),
-        savedStateMap = buildContext.savedStateMap,
-    ),
+    @Assisted private val spotlight: Spotlight<NavTarget>,
 ) : ParentNode<NavTarget>(
     navModel = spotlight,
     buildContext = buildContext
@@ -96,7 +87,16 @@ class WhatsAppyxSlideShow @AssistedInject constructor(
     interface WhatsAppyxSlideShowNodeFactory {
         fun create(
             buildContext: BuildContext,
-            spotlight: Spotlight<NavTarget>
+            spotlight: Spotlight<NavTarget> = Spotlight(
+                items = listOf(
+                    NavTarget.Intro,
+                    NavTarget.ModelDrivenIntro,
+                    NavTarget.NavModelTeaser,
+                    NavTarget.ComposableNavigation,
+                ),
+                backPressHandler = GoToPrevious(),
+                savedStateMap = buildContext.savedStateMap,
+            )
         ): WhatsAppyxSlideShow
     }
 
@@ -263,7 +263,17 @@ private fun PreviewContent() {
                     modelIntroNodeFactory = object : ModelDrivenIntro.NodeFactory {
                         override fun create(buildContext: BuildContext): ModelDrivenIntro =
                             ModelDrivenIntro(userCache, buildContext)
-                    }
+                    },
+                    spotlight = Spotlight(
+                        items = listOf(
+                            NavTarget.Intro,
+                            NavTarget.ModelDrivenIntro,
+                            NavTarget.NavModelTeaser,
+                            NavTarget.ComposableNavigation,
+                        ),
+                        backPressHandler = GoToPrevious(),
+                        savedStateMap = root(null).savedStateMap,
+                    )
                 )
             }
         }
